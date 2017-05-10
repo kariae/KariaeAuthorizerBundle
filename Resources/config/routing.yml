@@ -1,0 +1,3 @@
+kariae_authorizer_homepage:
+    path:     /
+    defaults: { _controller: KariaeAuthorizerBundle:Default:index }

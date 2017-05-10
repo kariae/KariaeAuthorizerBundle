@@ -1,0 +1,4 @@
+services:
+#    kariae_authorizer.example:
+#        class: Kariae\AuthorizerBundle\Example
+#        arguments: ["@service_id", "plain_value", "%parameter%"]
