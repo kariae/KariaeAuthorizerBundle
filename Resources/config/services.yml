@@ -1,4 +1,21 @@
 services:
-#    kariae_authorizer.example:
-#        class: Kariae\AuthorizerBundle\Example
-#        arguments: ["@service_id", "plain_value", "%parameter%"]
+  # Request listener
+  kariae.listener.request:
+    class: Kariae\AuthorizerBundle\EventListener\RequestListener
+    arguments: ['@security.authorization_checker', '@kariae.helper.authorizer']
+    tags:
+      - { name: kernel.event_listener, event: kernel.controller, method: onKernelController }
+  # Authorizer voter
+  kariae.voter:
+    class:  Kariae\AuthorizerBundle\Security\AuthorizerVoter
+    arguments: ['%kariae_authorizer%', '@doctrine.orm.entity_manager']
+    tags:
+      - { name: security.voter }
+    public: false
+  # Authorizer helper
+  kariae.helper.authorizer:
+    class: Kariae\AuthorizerBundle\Helper\AuthorizerHelper
+    arguments: ['@router', 'redis_host']
+  # Cache helper
+  kariae.helper.cache:
+    class: Kariae\AuthorizerBundle\Helper\CacheHelper
