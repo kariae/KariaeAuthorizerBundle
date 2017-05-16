@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="authorizer")
  * @ORM\Entity(repositoryClass="Kariae\AuthorizerBundle\Repository\AuthorizerRepository")
+ * @ORM\Cache(usage="NONSTRICT_READ_WRITE", region="my_region")
  */
 class Authorizer
 {
