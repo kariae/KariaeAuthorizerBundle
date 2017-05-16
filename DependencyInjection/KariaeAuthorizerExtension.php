@@ -22,6 +22,9 @@ class KariaeAuthorizerExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
+        // Load bundle parameters
+        $container->setParameter('kariae_authorizer', $config);
+
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
     }

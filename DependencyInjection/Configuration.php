@@ -20,9 +20,52 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('kariae_authorizer');
 
-        // Here you should define the parameters that are allowed to
-        // configure your bundle. See the documentation linked above for
-        // more information on that topic.
+        $rootNode
+            ->children()
+                // User provider parameters
+                ->scalarNode('user_class')
+                    ->isRequired()
+                    ->cannotBeEmpty()
+                ->end()
+                // Cache parameters
+                ->arrayNode('cache')
+                    ->canBeUnset()
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->booleanNode('enabled')->defaultValue(false)->end()
+                        ->scalarNode('adapter')
+                            ->validate()
+                                ->ifNotInArray(array('redis'))
+                                ->thenInvalid('Invalid cache adapter %s')
+                            ->end()
+                        ->end()
+                        ->arrayNode('redis')
+                            ->children()
+                                ->scalarNode('host')
+                                    ->cannotBeEmpty()
+                                    ->isRequired()
+                                ->end()
+                                ->integerNode('port')->defaultValue(6379)->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                    ->validate() // Validate cache parameter
+                        ->ifTrue(function ($v) {
+                            if ($v['enabled']) {
+                                // Adapter should be required
+                                if (!isset($v['adapter']) ||
+                                    !isset($v[$v['adapter']])) {
+                                    return true;
+                                }
+                            }
+                        })
+                        ->thenInvalid('Please enter the configuration for the
+                            selected cache adapter')
+                        ->end()
+                    ->end()
+                ->end()
+            ->end()
+        ;
 
         return $treeBuilder;
     }
